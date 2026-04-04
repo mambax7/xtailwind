@@ -24,34 +24,33 @@ xTailwind pairs Tailwind with DaisyUI so you get the Bootswatch-style theme pick
 - **Built-in RTL support** via Tailwind logical properties
 - **WCAG AA** baseline from DaisyUI's color system
 
-## Build
+## Installation
 
-xTailwind requires a one-time CSS build step. You don't need to rebuild unless you edit templates or customize the Tailwind config.
+xTailwind ships with the compiled CSS already in place (`css/styles.css`), so there is **no build step required** for end users. Just drop the theme in and activate it.
 
-### Option A — Tailwind CLI standalone (no Node.js)
+1. Copy the `xtailwind/` directory to `themes/` in your XOOPS installation
+2. In XOOPS admin → System → Preferences → General Settings → select `xtailwind` as the theme
 
-Download the Tailwind standalone binary from the [Tailwind CLI releases](https://github.com/tailwindlabs/tailwindcss/releases/latest) for your platform. DaisyUI is **not** available in the standalone binary, so this path gives you Tailwind only (no component classes or pre-built themes).
+Alpine.js (required for interactive components like dropdowns and mobile nav) is loaded from the shared `xoops_lib/Frameworks/alpine/` location in XOOPS core. No per-theme JavaScript install needed.
 
-### Option B — npm (recommended, enables DaisyUI)
+## Rebuilding the CSS (developers only)
+
+You only need to rebuild if you modify templates, add custom CSS to `css/input.css`, or change which DaisyUI themes are bundled. End users never need to run these commands.
+
+Prerequisites: Node.js 18+ installed on your development machine.
 
 ```bash
 cd themes/xtailwind
-npm install
-npm run build
+npm install      # one-time: downloads Tailwind, DaisyUI, and Typography plugin
+npm run build    # compiles css/input.css → css/styles.css (minified)
 ```
 
-This compiles `css/input.css` → `css/styles.css` with Tailwind + DaisyUI and all enabled themes.
-
-For development with auto-rebuild on template changes:
+For live rebuilding during development:
 ```bash
 npm run watch
 ```
 
-## Installation
-
-1. Copy the `xtailwind/` directory to `themes/` in your XOOPS installation
-2. Run `npm install && npm run build` (see Build section)
-3. In XOOPS admin → System → Preferences → General Settings → select `xtailwind` as the theme
+After editing and rebuilding, commit the updated `css/styles.css` so the next person can use the theme without a build step.
 
 ## Theme Switcher
 
@@ -68,15 +67,15 @@ The navbar includes:
 | CSS framework | Bootstrap 5.3.8 | Tailwind 3.4 + DaisyUI 4 |
 | Themes | 21 Bootswatch variants | 34 DaisyUI themes |
 | CSS approach | Component library | Utility-first + DaisyUI components |
-| JavaScript | Bootstrap bundle | Alpine.js |
-| Build step | None (drop-in CSS) | Required (Tailwind compiler) |
+| JavaScript | Bootstrap bundle | Alpine.js (shared via `xoops_lib/Frameworks/alpine/`) |
+| End-user install | Drop-in (ships compiled CSS) | Drop-in (ships compiled CSS) |
+| Developer rebuild | N/A (no build step) | Optional, via `npm run build` |
 | Dark mode | `data-bs-theme` attribute | `data-theme` attribute |
 | RTL | Bootstrap logical props | Tailwind logical props |
-| Form renderer | `XoopsFormRendererBootstrap5` | `XoopsFormRendererBootstrap5` (DaisyUI styles most BS5 classes gracefully) |
+| Form renderer | `XoopsFormRendererBootstrap5` | `XoopsFormRendererTailwind` (native DaisyUI) |
 
 ## Known Limitations (Proof of Concept)
 
-- **Form renderer mismatch** — XOOPS core only ships a Bootstrap 5 form renderer. Forms render with BS classes; DaisyUI/Tailwind restyles most of them but some edge cases may look off. A proper `XoopsFormRendererTailwind` class would need to be contributed to XOOPS core for a clean solution.
 - **Module templates not included** — only core theme templates are provided. Module overrides (newbb, publisher, wggallery, etc.) still need to be rewritten from the xSwatch5 Bootstrap versions.
 - **Admin toolbar** — not yet ported from xSwatch5.
 - **Cookie consent** — not yet ported.
@@ -90,9 +89,13 @@ The navbar includes:
 
 ## Requirements
 
+### End users (site administrators)
 - XOOPS 2.5.11+ (RTL auto-detection requires 2.5.12+)
 - PHP 8.2+
-- Node.js 18+ (for the build step, or use the standalone CLI)
+- `XoopsFormRendererTailwind` class in XOOPS core (shipped with XOOPS 2.5.12+, or add manually for earlier versions)
+
+### Developers (only if modifying and rebuilding the theme)
+- Node.js 18+
 
 ## Credits
 
