@@ -92,7 +92,7 @@ The navbar includes:
 ### End users (site administrators)
 - XOOPS 2.5.11+ (RTL auto-detection requires 2.5.12+)
 - PHP 8.2+
-- `XoopsFormRendererTailwind` class in XOOPS core (shipped with XOOPS 2.5.12+, or add manually for earlier versions)
+- `XoopsFormRendererTailwind` class in XOOPS core is **recommended** (shipped with XOOPS 2.5.13+). If your XOOPS version doesn't include it, the theme automatically falls back to the Bootstrap 5 form renderer — forms will still work and look mostly correct because DaisyUI aliases most Bootstrap 5 form classes. For pixel-perfect form styling, add `XoopsFormRendererTailwind.php` to `htdocs/class/xoopsform/renderer/` manually.
 
 ### Developers (only if modifying and rebuilding the theme)
 - Node.js 18+
